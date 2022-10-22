@@ -21,7 +21,9 @@ public class ProgressionBarExample : GameManager
     {
         // Omvandla progressionen till 0-1 (att multiplicera med 0 innebär längst till vänster, 1 längst till höger)
         float progressAsDecimal = progressionValue / 100f;
+        if (procent > 0)
         progressAsDecimal = procent % 1;
+
         float position = (backgroundBar.rect.width - currentProgression.rect.width ) * progressAsDecimal;
 
         // Denna metoden förflyttar currentProgression (den röda kuben) position är förflyttningen längs progression-baren.

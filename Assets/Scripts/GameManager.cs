@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
             int Pi = (pointCount + i - 1) % pointCount;
             int Ni = (i + 1) % pointCount;
 
-            TrackLength += LineLength(levelCheckpoints[i].position.x, levelCheckpoints[i].position.z, levelCheckpoints[Ni].position.x, levelCheckpoints[Ni].position.z);
+            TrackLength += SegmentLength(levelCheckpoints[i].position.x, levelCheckpoints[i].position.z, levelCheckpoints[Ni].position.x, levelCheckpoints[Ni].position.z);
 
 
             PointK[i] = -1/Kcal(levelCheckpoints[Pi].transform, levelCheckpoints[Ni].transform);
@@ -46,13 +46,8 @@ public class GameManager : MonoBehaviour
     private float[] PointM;
 
     private int n = 0;
+    private float ClearedLength = 0;
     public static float procent = 0;
-    private float ClearedProcent = 0;
-
-    private float Cut1X;
-    private float Cut1Z;
-    private float Cut2X;
-    private float Cut2Z;
 
     void Update()
     {
@@ -68,32 +63,35 @@ public class GameManager : MonoBehaviour
         float KartK = LineK[n];
         float KartM = Mcal(KartT.position.x, KartT.position.z, KartK);
 
-        Cut1X = CutX(KartK, KartM, PointK[n], PointM[n]);
-        Cut1Z = CutZ(KartK, KartM, Cut1X);
+        //Cut Points Cords
+        float Cut1X = CutX(KartK, KartM, PointK[n], PointM[n]);
+        float Cut1Z = CutZ(KartK, KartM, Cut1X);
 
-        Cut2X = CutX(KartK, KartM, PointK[Nn], PointM[Nn]);
-        Cut2Z = CutZ(KartK, KartM, Cut2X);
+        float Cut2X = CutX(KartK, KartM, PointK[Nn], PointM[Nn]);
+        float Cut2Z = CutZ(KartK, KartM, Cut2X);
 
-        float CutLength = LineLength(Cut1X, Cut1Z, Cut2X, Cut2Z);
+        float CutLength = SegmentLength(Cut1X, Cut1Z, Cut2X, Cut2Z);
 
-        float TraveledProcent = LineLength(KartT.position.x, KartT.position.z, Cut1X, Cut1Z) / CutLength;
+        float TraveledProcent = SegmentLength(KartT.position.x, KartT.position.z, Cut1X, Cut1Z) / CutLength;
 
-        float segmentLength = LineLength(Cn.position.x, Cn.position.z, CNn.position.x, CNn.position.z);
-        float PasedsegmentLength = LineLength(CPn.position.x, CPn.position.z, Cn.position.x, Cn.position.z);
+        float TraveledBackwordsProcent = SegmentLength(KartT.position.x, KartT.position.z, Cut2X, Cut2Z) / CutLength;
 
-        if (TraveledProcent < 0f)
+        float LineLength = SegmentLength(Cn.position.x, Cn.position.z, CNn.position.x, CNn.position.z);
+        float PasedLineLength = SegmentLength(CPn.position.x, CPn.position.z, Cn.position.x, Cn.position.z);
+
+        if (TraveledBackwordsProcent > 1f)
         {
             n = Pn;
-            ClearedProcent -= PasedsegmentLength;
+            ClearedLength -= PasedLineLength;
         }
 
         if (TraveledProcent >= 1f)
         {
             n = Nn;
-            ClearedProcent += segmentLength;
+            ClearedLength += LineLength;
         }
 
-        procent = (ClearedProcent + segmentLength * TraveledProcent) / TrackLength;
+        procent = (ClearedLength + LineLength * TraveledProcent) / TrackLength;
 
         //Debug.Log(Cut1X + " Cut1X");
         //Debug.Log(Cut1Z + " Cut1Z");
@@ -102,10 +100,11 @@ public class GameManager : MonoBehaviour
         //Debug.Log(LineLength(Cn.position.x, Cn.position.z, CNn.position.x, CNn.position.z) + " Long");
         //Debug.Log(CutLength + " Long");
         //Debug.Log(LineLength(KartT.position.x, KartT.position.z, Cut1X, Cut1Z));
+        Debug.Log(procent);
         Debug.Log("Point " + n);
     }
 
-    private float LineLength(float oneX, float oneZ, float twoX, float twoZ)
+    private float SegmentLength(float oneX, float oneZ, float twoX, float twoZ)
     {
         float deltaX = (twoX - oneX);
         float deltaZ = (twoZ - oneZ);
