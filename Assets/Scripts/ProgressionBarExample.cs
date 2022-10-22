@@ -5,7 +5,7 @@ using UnityEngine;
 // För att använda UI-delar i Unity måste vi inkludera UnityEngine.UI
 using UnityEngine.UI;
 
-public class ProgressionBarExample : MonoBehaviour
+public class ProgressionBarExample : GameManager
 {
     // Dessa variabler är referenser till RectTransforms (position och storlek för UI element). Just dessa två
     // motsvarar då bakgrunden för "progression" och den andra är punkten som förflyttar sig över bakgrunden.
@@ -21,6 +21,7 @@ public class ProgressionBarExample : MonoBehaviour
     {
         // Omvandla progressionen till 0-1 (att multiplicera med 0 innebär längst till vänster, 1 längst till höger)
         float progressAsDecimal = progressionValue / 100f;
+        progressAsDecimal = procent % 1;
         float position = (backgroundBar.rect.width - currentProgression.rect.width ) * progressAsDecimal;
 
         // Denna metoden förflyttar currentProgression (den röda kuben) position är förflyttningen längs progression-baren.
