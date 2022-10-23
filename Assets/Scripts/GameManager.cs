@@ -56,61 +56,24 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        //int Pn = (pointCount + n - 1) % pointCount;
-        //int Nn = (n + 1) % pointCount;
-
-        //Transform CPn = levelCheckpoints[Pn];
-        //Transform Cn = levelCheckpoints[n];
-        //Transform CNn = levelCheckpoints[Nn];
-
-        //Transform KartT = playerKart.transform;
-
-        //float KartK = LineK[n];
-        //float KartM = Mcal(KartT.position.x, KartT.position.z, KartK);
-
-        ////Cut Points Cords
-        //float Cut1X = CutX(KartK, KartM, PointK[n], PointM[n]);
-        //float Cut1Z = CutZ(KartK, KartM, Cut1X);
-
-        //float Cut2X = CutX(KartK, KartM, PointK[Nn], PointM[Nn]);
-        //float Cut2Z = CutZ(KartK, KartM, Cut2X);
-
-        //float CutLength = SegmentLength(Cut1X, Cut1Z, Cut2X, Cut2Z);
-
-        ////Stuf
-        //TraveledProcent = SegmentLength(KartT.position.x, KartT.position.z, Cut1X, Cut1Z) / CutLength;
-        //TraveledBackwordsProcent = SegmentLength(KartT.position.x, KartT.position.z, Cut2X, Cut2Z) / CutLength;
-
-        //LineLength = SegmentLength(Cn.position.x, Cn.position.z, CNn.position.x, CNn.position.z);
-        //PasedLineLength = SegmentLength(CPn.position.x, CPn.position.z, Cn.position.x, Cn.position.z);
-
+        int Pn = (pointCount + n - 1) % pointCount;
+        int Nn = (n + 1) % pointCount;
         AllCalculations();
 
             if (TraveledProcent >= 1f)
             {
-                n = (n + 1) % pointCount;
+                n = Nn;
                 ClearedLength += LineLength;
                 AllCalculations();
             }
             else if (TraveledBackwordsProcent > 1f)
             {
-                n = (pointCount + n - 1) % pointCount;
+                n = Pn;
                 ClearedLength -= PasedLineLength;
                 AllCalculations();
             }
 
-
         procent = (ClearedLength + LineLength * TraveledProcent) / TrackLength;
-
-        //Debug.Log(Cut1X + " Cut1X");
-        //Debug.Log(Cut1Z + " Cut1Z");
-        Debug.Log(TraveledProcent + "%");
-        //Debug.Log(ClearedProcent + "%");
-        //Debug.Log(LineLength(Cn.position.x, Cn.position.z, CNn.position.x, CNn.position.z) + " Long");
-        //Debug.Log(CutLength + " Long");
-        //Debug.Log(LineLength(KartT.position.x, KartT.position.z, Cut1X, Cut1Z));
-        Debug.Log(procent);
-        Debug.Log("Point " + n);
     }
 
     private void AllCalculations()
